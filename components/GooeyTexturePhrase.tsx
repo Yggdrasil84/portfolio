@@ -9,10 +9,17 @@ type GooeyTexturePhraseProps = {
   yNudge?: number;
 };
 
+let autoPilotOwnerId: string | null = null;
+
 export default function GooeyTexturePhrase({ children, className = "", yNudge = 0 }: GooeyTexturePhraseProps) {
   const wrapperRef = useRef<HTMLSpanElement>(null);
+  const autoRef = useRef({ t: 0, raf: 0 as number | 0 });
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [shouldRenderOverlay, setShouldRenderOverlay] = useState(true);
+  const [coarsePointer, setCoarsePointer] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [autoPilot, setAutoPilot] = useState(false);
   const [textStyle, setTextStyle] = useState({
     fontFamily: "inherit",
     fontSize: "inherit",
@@ -41,8 +48,9 @@ export default function GooeyTexturePhrase({ children, className = "", yNudge = 
     const coarseMedia = window.matchMedia("(hover: none), (pointer: coarse)");
 
     const syncMedia = () => {
-      const disableOverlay = motionMedia.matches || coarseMedia.matches;
-      setShouldRenderOverlay(!disableOverlay);
+      setReduceMotion(motionMedia.matches);
+      setCoarsePointer(coarseMedia.matches);
+      setShouldRenderOverlay(!motionMedia.matches);
     };
 
     syncMedia();
@@ -54,6 +62,82 @@ export default function GooeyTexturePhrase({ children, className = "", yNudge = 
       coarseMedia.removeEventListener("change", syncMedia);
     };
   }, []);
+
+  useEffect(() => {
+    if (!wrapperRef.current || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    setAutoPilot(coarsePointer && !reduceMotion && isVisible);
+  }, [coarsePointer, reduceMotion, isVisible]);
+
+  useEffect(() => {
+    if (!autoPilot || !shouldRenderOverlay || size.width <= 0 || size.height <= 0 || !wrapperRef.current) {
+      if (autoRef.current.raf) {
+        window.cancelAnimationFrame(autoRef.current.raf);
+        autoRef.current.raf = 0;
+      }
+      autoRef.current.t = 0;
+      if (autoPilotOwnerId === targetId) {
+        autoPilotOwnerId = null;
+      }
+      return;
+    }
+
+    if (autoPilotOwnerId && autoPilotOwnerId !== targetId) {
+      return;
+    }
+    autoPilotOwnerId = targetId;
+
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+
+    const step = (now: number) => {
+      if (!wrapperRef.current || autoPilotOwnerId !== targetId) return;
+
+      const prevT = autoRef.current.t || now;
+      const dt = Math.min(0.05, (now - prevT) / 1000);
+      autoRef.current.t = prevT + dt;
+      const t = autoRef.current.t * 2.6;
+
+      const centerX = size.width / 2;
+      const centerY = size.height / 2;
+      const ampX = clamp(size.width * 0.18, 10, 28);
+      const ampY = clamp(size.height * 0.22, 8, 24);
+
+      const localX = centerX + Math.cos(t * 0.9) * ampX + Math.sin(t * 1.7) * 6;
+      const localY = centerY + Math.sin(t * 1.1) * ampY + Math.cos(t * 1.3) * 4;
+      const rect = wrapperRef.current.getBoundingClientRect();
+
+      setPointer(targetId, rect.left + localX, rect.top + localY, true);
+      autoRef.current.raf = window.requestAnimationFrame(step);
+    };
+
+    autoRef.current.raf = window.requestAnimationFrame(step);
+
+    return () => {
+      if (autoRef.current.raf) {
+        window.cancelAnimationFrame(autoRef.current.raf);
+        autoRef.current.raf = 0;
+      }
+      if (autoPilotOwnerId === targetId) {
+        autoPilotOwnerId = null;
+        if (wrapperRef.current) {
+          const rect = wrapperRef.current.getBoundingClientRect();
+          setPointer(targetId, rect.left + size.width / 2, rect.top + size.height / 2, false);
+        }
+      }
+    };
+  }, [autoPilot, setPointer, shouldRenderOverlay, size.height, size.width, targetId]);
 
   useEffect(() => {
     if (!wrapperRef.current) return;
@@ -109,17 +193,17 @@ export default function GooeyTexturePhrase({ children, className = "", yNudge = 
       ref={wrapperRef}
       className={`gooey-phrase ${className}`.trim()}
       onPointerEnter={(event) => {
-        if (!shouldRenderOverlay) return;
+        if (!shouldRenderOverlay || autoPilot) return;
         setCursorPosition(event);
         setPointer(targetId, event.clientX, event.clientY, true);
       }}
       onPointerMove={(event) => {
-        if (!shouldRenderOverlay) return;
+        if (!shouldRenderOverlay || autoPilot) return;
         setCursorPosition(event);
         setPointer(targetId, event.clientX, event.clientY, true);
       }}
       onPointerLeave={(event) => {
-        if (!shouldRenderOverlay) return;
+        if (!shouldRenderOverlay || autoPilot) return;
         if (wrapperRef.current) {
           wrapperRef.current.style.setProperty("--gcx", "-9999px");
           wrapperRef.current.style.setProperty("--gcy", "-9999px");

@@ -345,7 +345,7 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+@media (prefers-reduced-motion: reduce) {
   .gooey-phrase__svg {
     display: none;
   }
