@@ -2,9 +2,9 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import GooeyTexturePhrase from "@/components/GooeyTexturePhrase";
 import HeroBackground from "@/components/HeroBackground";
 import ImpactBurst from "@/components/ImpactBurst";
-import SpotlightPhrase from "@/components/SpotlightPhrase";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -24,21 +24,19 @@ export default function Hero() {
 
             <div className="space-y-4">
               <h1 id="hero-title" className="text-4xl font-bold tracking-tight leading-[1.05] text-balance md:text-6xl">
-                Je transforme les <SpotlightPhrase>frictions UX</SpotlightPhrase> en{" "}
-                <span className="whitespace-nowrap">
-                  <SpotlightPhrase>leviers de conversion</SpotlightPhrase>
-                  <span aria-hidden className="text-ink">.</span>
-                </span>
+                Je transforme les <GooeyTexturePhrase>{"frictions\u00A0UX"}</GooeyTexturePhrase> en{" "}
+                <GooeyTexturePhrase>{"leviers\u00A0de\u00A0conversion"}</GooeyTexturePhrase>
+                {"\u00A0"}<span className="text-ink">.</span>
               </h1>
             </div>
 
             <p className="max-w-2xl text-base leading-relaxed text-ink-muted/90 md:text-lg">
-              <span
-                tabIndex={0}
-                className="hover-keyterm font-bold rounded-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              <button
+                type="button"
+                className="hover-keyterm rounded-[0.2em] border-0 bg-transparent p-0 font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 10+ ans
-              </span>{" "}
+              </button>{" "}
               entre tech et e-commerce : analyse, priorisation, delivery et <ImpactBurst />.
             </p>
 

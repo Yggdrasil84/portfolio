@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @config "../tailwind.config.ts";
 
 :root {
@@ -68,6 +68,50 @@
   }
 }
 
+@keyframes heroLineSlide {
+  0% {
+    opacity: 0;
+    transform: translate3d(-34px, -6px, 0);
+  }
+
+  26% {
+    opacity: 0.35;
+  }
+
+  72% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(42px, 8px, 0);
+  }
+}
+
+@keyframes heroDotPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.85;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes heroDotDrift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: var(--dot-drift-x) var(--dot-drift-y);
+  }
+}
+
 @layer utilities {
   .text-gradient-name {
     @apply bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent;
@@ -77,42 +121,35 @@
     animation: fade-up 520ms ease-out both;
   }
 
-  .spotlight-phrase {
+  .gooey-phrase {
     position: relative;
     display: inline-block;
     vertical-align: baseline;
-    line-height: 1.02;
-    --sx: 50%;
-    --sy: 50%;
+    isolation: isolate;
+    cursor: crosshair;
+    white-space: nowrap;
   }
 
-  .spotlight-base {
+  .gooey-phrase__base {
+    position: relative;
+    z-index: 1;
     display: inline-block;
+    font: inherit;
+    line-height: inherit;
+    font-weight: 700;
     color: rgb(var(--c-accent-2) / 0.98);
   }
 
-  .spotlight-glow {
+  .gooey-phrase__svg {
     position: absolute;
     inset: 0;
-    display: inline-block;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    opacity: 0;
-    color: transparent;
-    background-image: radial-gradient(
-      circle at var(--sx) var(--sy),
-      rgb(232 228 224 / 0.9) 0%,
-      rgb(var(--c-accent) / 0.74) 30%,
-      transparent 65%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: opacity 200ms ease-out;
-  }
-
-  .spotlight-phrase:is(:hover, :focus-visible) .spotlight-glow {
-    opacity: 1;
-    filter: drop-shadow(0 2px 7px rgb(var(--c-accent) / 0.2));
+    opacity: 0.92;
+    mix-blend-mode: multiply;
+    overflow: visible;
   }
 
   .hover-keyterm {
@@ -178,269 +215,6 @@
     animation-delay: var(--delay);
   }
 
-  .cursor-accent-target {
-    /* TODO: SVG cursor color is static because CSS vars are not supported inside data URI values. */
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%237D5745' stroke-width='1.6'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8' stroke='%237D5745' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
-        16 16,
-      crosshair;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-up {
-    animation: none;
-  }
-
-  .spotlight-phrase {
-    --sx: 50%;
-    --sy: 50%;
-  }
-
-  .spotlight-glow,
-  .hover-keyterm,
-  .impact-text {
-    transition:
-      color 140ms linear,
-      background-size 140ms linear,
-      opacity 140ms linear;
-  }
-
-  .impact-shake {
-    animation: none;
-  }
-
-  .impact-particle {
-    display: none;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), "Segoe UI", sans-serif;
-}
-
-@keyframes pulse-glow {
-  0% {
-    opacity: 0.45;
-    transform: scale(0.92);
-  }
-
-  50% {
-    opacity: 0.95;
-    transform: scale(1.08);
-  }
-
-  100% {
-    opacity: 0.45;
-    transform: scale(0.92);
-  }
-}
-
-@layer utilities {
-  .hero-grid {
-    background-image:
-      linear-gradient(rgb(var(--c-accent) / 0.11) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(var(--c-accent) / 0.09) 1px, transparent 1px);
-    background-size: 34px 34px;
-    opacity: 0.1;
-    mask-image: radial-gradient(circle at 72% 48%, black 52%, transparent 100%);
-  }
-
-  .hero-blob {
-    border-radius: 9999px;
-    filter: blur(70px);
-  }
-
-  .hero-diagonal-line {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgb(var(--c-accent) / 0.3) 35%,
-      rgb(var(--c-accent-2) / 0.24) 55%,
-      transparent 100%
-    );
-    opacity: 0.28;
-  }
-
-  .hero-dot {
-    border-radius: 9999px;
-    background-color: rgb(var(--c-accent) / 0.82);
-    box-shadow:
-      0 0 0 1px rgb(var(--c-bg) / 0.35),
-      0 0 12px rgb(var(--c-accent) / 0.42);
-  }
-
-  .hero-halo {
-    border-radius: 9999px;
-    background: radial-gradient(circle, rgb(var(--c-accent) / 0.2) 0%, rgb(var(--c-accent-2) / 0.11) 45%, transparent 72%);
-    filter: blur(62px);
-    opacity: 0.8;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-dot {
-    animation: none !important;
-  }
-}
-
-@keyframes heroLineSlide {
-  0% {
-    opacity: 0;
-    transform: translate3d(-16px, 0, 0);
-  }
-
-  22% {
-    opacity: 0.22;
-  }
-
-  70% {
-    opacity: 0.12;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(22px, 0, 0);
-  }
-}
-
-@keyframes heroDotPulse {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: scale(0.9);
-  }
-
-  50% {
-    opacity: 0.82;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes heroDotDrift {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-
-  50% {
-    translate: var(--dot-drift-x) var(--dot-drift-y);
-  }
-}
-
-@layer utilities {
-  .hero-bg-grid {
-    background-image:
-      linear-gradient(rgb(var(--c-accent-2) / 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(var(--c-accent-2) / 0.06) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: 0.08;
-    mask-image: radial-gradient(circle at 74% 48%, black 52%, transparent 100%);
-  }
-
-  .hero-bg-halo {
-    border-radius: 9999px;
-    filter: blur(78px);
-    pointer-events: none;
-  }
-
-  .hero-bg-halo-primary {
-    background: radial-gradient(
-      circle,
-      rgb(125 87 69 / 0.18) 0%,
-      rgb(160 112 84 / 0.14) 38%,
-      rgb(230 210 190 / 0.18) 62%,
-      transparent 78%
-    );
-  }
-
-  .hero-bg-halo-secondary {
-    background: radial-gradient(
-      circle,
-      rgb(160 112 84 / 0.12) 0%,
-      rgb(125 87 69 / 0.1) 42%,
-      transparent 76%
-    );
-  }
-
-  .hero-bg-line {
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgb(125 87 69 / 0.22) 34%,
-      rgb(160 112 84 / 0.18) 56%,
-      transparent 100%
-    );
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-
-  .hero-bg-dot {
-    border-radius: 9999px;
-    background: rgb(230 210 190 / 0.84);
-    box-shadow:
-      0 0 0 1px rgb(217 206 191 / 0.3),
-      0 0 12px rgb(160 112 84 / 0.34),
-      0 0 22px rgb(125 87 69 / 0.22);
-    will-change: transform, opacity;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg-line,
-  .hero-bg-dot {
-    animation: none !important;
-  }
-}
-
-@keyframes heroLineSlide {
-  0% {
-    opacity: 0;
-    transform: translate3d(-34px, -6px, 0);
-  }
-
-  26% {
-    opacity: 0.35;
-  }
-
-  72% {
-    opacity: 0.2;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate3d(42px, 8px, 0);
-  }
-}
-
-@keyframes heroDotPulse {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.85;
-    transform: scale(1.25);
-  }
-}
-
-@keyframes heroDotDrift {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-
-  50% {
-    translate: var(--dot-drift-x) var(--dot-drift-y);
-  }
-}
-
-@layer utilities {
   .hero-bg-grid {
     background-image:
       linear-gradient(rgb(var(--c-accent-2) / 0.11) 1px, transparent 1px),
@@ -512,8 +286,39 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+
+  .gooey-phrase__svg,
+  .hover-keyterm,
+  .impact-text {
+    transition:
+      color 140ms linear,
+      background-size 140ms linear,
+      opacity 140ms linear;
+  }
+
+  .impact-shake {
+    animation: none;
+  }
+
+  .impact-particle,
   .hero-bg-line,
   .hero-bg-dot {
     animation: none !important;
   }
 }
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .gooey-phrase__svg {
+    display: none;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), "Segoe UI", sans-serif;
+}
+
