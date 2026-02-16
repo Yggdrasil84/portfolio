@@ -46,7 +46,7 @@ export default function Home() {
           </nav>
 
           <a
-            href="mailto:hello@example.com"
+            href="mailto:praca.lilian@gmail.com"
             className="rounded-full border border-border px-4 py-2 text-sm font-medium text-ink transition hover:bg-surface/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
             Email

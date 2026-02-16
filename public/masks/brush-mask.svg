@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <filter id="strokeRough" x="-24%" y="-24%" width="148%" height="148%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.84" numOctaves="3" seed="13" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" />
+      <feGaussianBlur stdDeviation="1.1" />
+    </filter>
+  </defs>
+
+  <g filter="url(#strokeRough)">
+    <path
+      fill="white"
+      d="M18 116
+         C44 82 84 68 126 72
+         C168 76 206 98 226 132
+         C196 160 154 172 110 168
+         C66 164 32 144 18 116 Z"
+    />
+    <path
+      fill="white"
+      opacity="0.55"
+      d="M54 98
+         C86 80 126 80 162 94
+         C132 102 96 104 64 102
+         C60 102 56 100 54 98 Z"
+    />
+
+    <ellipse cx="46" cy="138" rx="14" ry="9" fill="white" opacity="0.44" />
+    <ellipse cx="72" cy="154" rx="10" ry="7" fill="white" opacity="0.36" />
+    <ellipse cx="176" cy="92" rx="12" ry="8" fill="white" opacity="0.4" />
+    <ellipse cx="196" cy="112" rx="9" ry="6" fill="white" opacity="0.33" />
+    <ellipse cx="148" cy="178" rx="11" ry="7" fill="white" opacity="0.3" />
+  </g>
+</svg>

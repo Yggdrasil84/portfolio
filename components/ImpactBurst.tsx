@@ -23,7 +23,7 @@ export default function ImpactBurst({ text = "impact mesurable" }: ImpactBurstPr
   const [isBursting, setIsBursting] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
-  const rootRef = useRef<HTMLSpanElement>(null);
+  const rootRef = useRef<HTMLButtonElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function ImpactBurst({ text = "impact mesurable" }: ImpactBurstPr
     };
   }, []);
 
-  const setOriginFromPointer = (event: React.MouseEvent<HTMLSpanElement>) => {
+  const setOriginFromPointer = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!rootRef.current) return;
     const rect = rootRef.current.getBoundingClientRect();
     setOrigin({
@@ -79,9 +79,9 @@ export default function ImpactBurst({ text = "impact mesurable" }: ImpactBurstPr
   };
 
   return (
-    <span
+    <button
+      type="button"
       ref={rootRef}
-      tabIndex={0}
       onMouseMove={setOriginFromPointer}
       onMouseEnter={(event) => {
         setOriginFromPointer(event);
@@ -91,7 +91,7 @@ export default function ImpactBurst({ text = "impact mesurable" }: ImpactBurstPr
         setOriginToCenter();
         triggerBurst();
       }}
-      className="impact-burst group relative inline-block rounded-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+      className="impact-burst group relative inline-block appearance-none rounded-[0.2em] border-0 bg-transparent p-0 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
     >
       <span className={`impact-text ${isBursting ? "impact-text--active impact-shake" : ""}`}>{text}</span>
       {isBursting &&
@@ -114,6 +114,6 @@ export default function ImpactBurst({ text = "impact mesurable" }: ImpactBurstPr
             {"\u26A1"}
           </span>
         ))}
-    </span>
+    </button>
   );
 }

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import GooeyTexturePhrase from "@/components/GooeyTexturePhrase";
+import { GooeyTrailProvider } from "@/components/GooeyTrailProvider";
 import HeroBackground from "@/components/HeroBackground";
 import ImpactBurst from "@/components/ImpactBurst";
 
@@ -23,11 +24,20 @@ export default function Hero() {
             <p className="text-sm uppercase tracking-[0.16em] text-ink-muted/80">PM · Growth &amp; CRO</p>
 
             <div className="space-y-4">
-              <h1 id="hero-title" className="text-4xl font-bold tracking-tight leading-[1.05] text-balance md:text-6xl">
-                Je transforme les <GooeyTexturePhrase>{"frictions\u00A0UX"}</GooeyTexturePhrase> en{" "}
-                <GooeyTexturePhrase>{"leviers\u00A0de\u00A0conversion"}</GooeyTexturePhrase>
-                {"\u00A0"}<span className="text-ink">.</span>
-              </h1>
+              <GooeyTrailProvider>
+                <h1 id="hero-title" className="text-4xl font-bold tracking-tight leading-[1.05] text-balance md:text-6xl">
+                  Je transforme les <GooeyTexturePhrase yNudge={4}>{"frictions\u00A0UX"}</GooeyTexturePhrase> en{" "}
+                  <GooeyTexturePhrase yNudge={4}>{"leviers\u00A0de\u00A0"}</GooeyTexturePhrase>
+                  <span className="hidden lg:inline"> </span>
+                  {/* conversion + point toujours ensemble */}
+                  <span className="md:block lg:inline">
+                    <GooeyTexturePhrase yNudge={4}>conversion</GooeyTexturePhrase>
+                    <span aria-hidden className="text-ink">
+                      .
+                    </span>
+                  </span>
+                </h1>
+              </GooeyTrailProvider>
             </div>
 
             <p className="max-w-2xl text-base leading-relaxed text-ink-muted/90 md:text-lg">

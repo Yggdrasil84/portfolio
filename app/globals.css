@@ -126,8 +126,19 @@
     display: inline-block;
     vertical-align: baseline;
     isolation: isolate;
-    cursor: crosshair;
+    cursor: auto;
     white-space: nowrap;
+    --gcx: -9999px;
+    --gcy: -9999px;
+  }
+
+  .gooey-phrase:hover {
+    cursor: none;
+  }
+
+  .gooey-phrase:hover,
+  .gooey-phrase:hover * {
+    cursor: none !important;
   }
 
   .gooey-phrase__base {
@@ -150,6 +161,30 @@
     opacity: 0.92;
     mix-blend-mode: multiply;
     overflow: visible;
+  }
+
+  .gooey-phrase__cursor {
+    position: absolute;
+    left: var(--gcx);
+    top: var(--gcy);
+    z-index: 3;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    border-radius: 9999px;
+    background: rgb(var(--c-accent) / 0.42);
+    border: 1px solid rgb(var(--c-accent-2) / 0.3);
+    box-shadow:
+      0 0 0 6px rgb(var(--c-accent) / 0.14),
+      0 0 22px rgb(var(--c-accent) / 0.48);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+    mix-blend-mode: screen;
+  }
+
+  .gooey-phrase:hover .gooey-phrase__cursor {
+    opacity: 1;
   }
 
   .hover-keyterm {
