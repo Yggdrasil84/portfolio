@@ -164,8 +164,8 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
         }
       }}
     >
-      <div className="gpi__inner">
-        <div className="gpi__media">
+      <div className="gpi__clip">
+        <div className="gpi__inner">
           <Image
             src={src}
             alt={alt}
@@ -177,15 +177,16 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
             onContextMenu={(event) => event.preventDefault()}
             onDragStart={(event) => event.preventDefault()}
           />
+          {!disabled ? (
+            <>
+              <div aria-hidden className="gpi__layer gpi__layer--a" />
+              <div aria-hidden className="gpi__layer gpi__layer--b" />
+              <div aria-hidden className="gpi__scan" />
+            </>
+          ) : null}
         </div>
-        {!disabled ? (
-          <>
-            <div aria-hidden className="gpi__layer gpi__layer--a" />
-            <div aria-hidden className="gpi__layer gpi__layer--b" />
-            <div aria-hidden className="gpi__shine" />
-          </>
-        ) : null}
       </div>
+      {!disabled ? <div aria-hidden className="gpi__glow" /> : null}
     </div>
   );
 }
