@@ -1,11 +1,11 @@
 ﻿"use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import GooeyTexturePhrase from "@/components/GooeyTexturePhrase";
 import { GooeyTrailProvider } from "@/components/GooeyTrailProvider";
 import HeroBackground from "@/components/HeroBackground";
 import ImpactBurst from "@/components/ImpactBurst";
+import GlitchPerspectiveImage from "@/components/GlitchPerspectiveImage";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -85,13 +85,11 @@ export default function Hero() {
 
           <div className="flex justify-center md:self-stretch">
             <div className="relative h-[360px] w-[300px] overflow-hidden rounded-3xl border border-border/60 bg-surface-2/45 shadow-[0_24px_60px_-36px_rgba(125,87,69,0.45)] sm:h-[420px] sm:w-[340px] md:h-full md:w-[360px] md:max-h-full lg:max-h-[560px]">
-              <Image
+              <GlitchPerspectiveImage
                 src="/hero.png"
                 alt="Portrait de Lilian Praca"
-                fill
                 sizes="(min-width: 1024px) 360px, (min-width: 768px) 360px, (min-width: 640px) 340px, 300px"
-                className="object-cover object-top"
-                priority
+                className="absolute inset-0 h-full w-full"
               />
             </div>
           </div>
