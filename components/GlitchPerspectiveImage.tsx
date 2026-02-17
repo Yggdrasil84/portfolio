@@ -16,20 +16,42 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
   const rafRef = useRef<number | null>(null);
   const pointerRef = useRef<{ x: number; y: number } | null>(null);
   const activeRef = useRef(false);
+  const activeClassRef = useRef(false);
   const targetRef = useRef({ rx: 0, ry: 0, tx: 0, ty: 0, sx: 0, sy: 0, s: 1, mx: 50, my: 50 });
   const currentRef = useRef({ rx: 0, ry: 0, tx: 0, ty: 0, sx: 0, sy: 0, s: 1, mx: 50, my: 50 });
   const [active, setActive] = useState(false);
   const [disabled, setDisabled] = useState(false);
+
+  const setActiveClass = (next: boolean) => {
+    if (activeClassRef.current === next) return;
+    activeClassRef.current = next;
+    setActive(next);
+  };
 
   useEffect(() => {
     const motionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
     const coarseMedia = window.matchMedia("(hover: none), (pointer: coarse)");
 
     const sync = () => {
-      setDisabled(motionMedia.matches || coarseMedia.matches);
-      if (motionMedia.matches || coarseMedia.matches) {
+      const isDisabled = motionMedia.matches || coarseMedia.matches;
+      setDisabled(isDisabled);
+      if (isDisabled) {
         activeRef.current = false;
-        setActive(false);
+        setActiveClass(false);
+        pointerRef.current = null;
+        targetRef.current = { rx: 0, ry: 0, tx: 0, ty: 0, sx: 0, sy: 0, s: 1, mx: 50, my: 50 };
+        currentRef.current = { rx: 0, ry: 0, tx: 0, ty: 0, sx: 0, sy: 0, s: 1, mx: 50, my: 50 };
+        if (rootRef.current) {
+          rootRef.current.style.setProperty("--rx", "0deg");
+          rootRef.current.style.setProperty("--ry", "0deg");
+          rootRef.current.style.setProperty("--tx", "0px");
+          rootRef.current.style.setProperty("--ty", "0px");
+          rootRef.current.style.setProperty("--sx", "0px");
+          rootRef.current.style.setProperty("--sy", "0px");
+          rootRef.current.style.setProperty("--s", "1");
+          rootRef.current.style.setProperty("--mx", "50%");
+          rootRef.current.style.setProperty("--my", "50%");
+        }
       }
     };
 
@@ -86,7 +108,7 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
 
     const current = currentRef.current;
     const target = targetRef.current;
-    const ease = 0.15;
+    const ease = activeRef.current ? 0.15 : 0.09;
 
     current.rx += (target.rx - current.rx) * ease;
     current.ry += (target.ry - current.ry) * ease;
@@ -116,6 +138,10 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
         Math.abs(target.s - current.s) <
       0.15;
 
+    if (!activeRef.current && settling) {
+      setActiveClass(false);
+    }
+
     if (activeRef.current || !settling) {
       rafRef.current = window.requestAnimationFrame(tick);
     } else {
@@ -141,7 +167,7 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
       onPointerEnter={(event) => {
         if (disabled) return;
         activeRef.current = true;
-        setActive(true);
+        setActiveClass(true);
         queuePointer(event);
       }}
       onPointerMove={(event) => {
@@ -150,7 +176,6 @@ export default function GlitchPerspectiveImage({ src, alt, sizes, className = ""
       }}
       onPointerLeave={() => {
         activeRef.current = false;
-        setActive(false);
         pointerRef.current = null;
         targetRef.current = { rx: 0, ry: 0, tx: 0, ty: 0, sx: 0, sy: 0, s: 1, mx: 50, my: 50 };
         startLoop();

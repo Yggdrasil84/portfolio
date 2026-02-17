@@ -15,6 +15,126 @@
   --foreground: rgb(var(--c-ink));
 }
 
+@keyframes acursorDot {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(var(--r)) translate(0, 0) scale(0.35);
+  }
+
+  18% {
+    opacity: 0.9;
+    transform: rotate(var(--a)) translateX(calc(var(--r) + 4px)) translate(var(--jx1), var(--jy1)) scale(calc(0.72 * var(--s)));
+  }
+
+  38% {
+    opacity: 0.75;
+    transform: rotate(var(--a)) translateX(calc(var(--r) + 8px)) translate(var(--jx2), var(--jy2)) scale(calc(0.92 * var(--s)));
+  }
+
+  62% {
+    opacity: 0.95;
+    transform: rotate(var(--a)) translateX(calc(var(--r) + 10px)) translate(calc(var(--ox) * 0.55), calc(var(--oy) * 0.55)) scale(calc(1 * var(--s)));
+  }
+
+  100% {
+    opacity: 0.72;
+    transform: rotate(var(--a)) translateX(calc(var(--r) + 12px)) translate(var(--ox), var(--oy)) scale(calc(0.88 * var(--s)));
+  }
+}
+
+.acursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(-9999px, -9999px, 0);
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.acursor.is-visible {
+  opacity: 1;
+}
+
+.acursor__wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52px;
+  height: 52px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 10px 20px rgb(var(--c-accent-2) / 0.1));
+}
+
+.acursor__ring {
+  position: absolute;
+  inset: 0;
+  width: 52px;
+  height: 52px;
+}
+
+.acursor__ringC {
+  fill: transparent;
+  stroke: rgb(var(--c-accent-2) / 0.55);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  transition: opacity 260ms cubic-bezier(0.2, 0.75, 0.25, 1), stroke 220ms ease-out, stroke-width 260ms ease-out;
+}
+
+.acursor__dots {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 320ms cubic-bezier(0.18, 0.78, 0.26, 1);
+}
+
+.acursor__dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: rgb(var(--c-accent) / 0.78);
+  transform-origin: 0 0;
+  transform: rotate(var(--a)) translateX(var(--r)) translate(0, 0) scale(0.35);
+  opacity: 0;
+  box-shadow: 0 0 8px rgb(var(--c-accent) / 0.3);
+  animation: acursorDot var(--dur) cubic-bezier(0.18, 0.82, 0.24, 1) infinite;
+  animation-delay: calc(var(--d) * -1);
+}
+
+.acursor__dot--a {
+  background: rgb(var(--c-accent-2) / 0.9);
+}
+
+.acursor__dot--b {
+  background: rgb(var(--c-accent) / 0.82);
+}
+
+.acursor__dot--c {
+  background: rgb(var(--c-accent) / 0.66);
+}
+
+.acursor.is-hover .acursor__ringC {
+  opacity: 0;
+  stroke-width: 0;
+  stroke: rgb(var(--c-accent-2) / 0.45);
+}
+
+.acursor.is-hover .acursor__dots {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .acursor {
+    display: none !important;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -330,19 +450,7 @@
     display: inline-block;
     vertical-align: baseline;
     isolation: isolate;
-    cursor: auto;
     white-space: nowrap;
-    --gcx: -9999px;
-    --gcy: -9999px;
-  }
-
-  .gooey-phrase:hover {
-    cursor: none;
-  }
-
-  .gooey-phrase:hover,
-  .gooey-phrase:hover * {
-    cursor: none !important;
   }
 
   .gooey-phrase__base {
@@ -365,30 +473,6 @@
     opacity: 0.92;
     mix-blend-mode: multiply;
     overflow: visible;
-  }
-
-  .gooey-phrase__cursor {
-    position: absolute;
-    left: var(--gcx);
-    top: var(--gcy);
-    z-index: 3;
-    width: 16px;
-    height: 16px;
-    pointer-events: none;
-    border-radius: 9999px;
-    background: rgb(var(--c-accent) / 0.42);
-    border: 1px solid rgb(var(--c-accent-2) / 0.3);
-    box-shadow:
-      0 0 0 6px rgb(var(--c-accent) / 0.14),
-      0 0 22px rgb(var(--c-accent) / 0.48);
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 120ms ease-out;
-    mix-blend-mode: screen;
-  }
-
-  .gooey-phrase:hover .gooey-phrase__cursor {
-    opacity: 1;
   }
 
   .hover-keyterm {

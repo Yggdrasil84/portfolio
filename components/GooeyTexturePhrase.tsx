@@ -93,38 +93,24 @@ export default function GooeyTexturePhrase({ children, className = "", yNudge = 
 
   const showOverlay = shouldRenderOverlay && size.width > 0 && size.height > 0 && (snapshot.running || localNodes.length > 0);
 
-  const setCursorPosition = (event: React.PointerEvent<HTMLSpanElement>) => {
-    if (!wrapperRef.current) return;
-    const rect = wrapperRef.current.getBoundingClientRect();
-    wrapperRef.current.style.setProperty("--gcx", `${event.clientX - rect.left}px`);
-    wrapperRef.current.style.setProperty("--gcy", `${event.clientY - rect.top}px`);
-  };
-
   return (
     <span
       ref={wrapperRef}
       className={`gooey-phrase ${className}`.trim()}
       onPointerEnter={(event) => {
         if (!shouldRenderOverlay) return;
-        setCursorPosition(event);
         setPointer(targetId, event.clientX, event.clientY, true);
       }}
       onPointerMove={(event) => {
         if (!shouldRenderOverlay) return;
-        setCursorPosition(event);
         setPointer(targetId, event.clientX, event.clientY, true);
       }}
       onPointerLeave={(event) => {
         if (!shouldRenderOverlay) return;
-        if (wrapperRef.current) {
-          wrapperRef.current.style.setProperty("--gcx", "-9999px");
-          wrapperRef.current.style.setProperty("--gcy", "-9999px");
-        }
         setPointer(targetId, event.clientX, event.clientY, false);
       }}
     >
       <span className="gooey-phrase__base">{children}</span>
-      <span aria-hidden className="gooey-phrase__cursor" />
       {showOverlay ? (
         <svg className="gooey-phrase__svg" width={size.width} height={size.height} viewBox={`0 0 ${size.width} ${size.height}`} aria-hidden>
           <defs>
